@@ -24,6 +24,7 @@ class Circuit:
 class Simulator:
     fileName = ""
     testVector = ""
+    finalOutput = ""
     circuit = Circuit([])
 
     def __init__(self, filename="s27.txt", testVector="1010101"):
@@ -35,14 +36,15 @@ class Simulator:
         self.readNets()
         self.simulate_circuit()
         for i in self.circuit.outPut:
-            print(str(i) +":" + str(self.circuit.ioList[str(i)]))
+            self.finalOutput = self.finalOutput + str(self.circuit.ioList[str(i)])
+        print("Input : " + self.testVector + "    Output : " + self.finalOutput)
 
     def readNets(self):
         logic_file = open(self.fileName)
         logic = logic_file.readlines()
         logic_file.close()
         self.parse_circuit(logic)
-        print("testVector", self.testVector)
+
 
     def parse_circuit(self, logic):
         for line in logic:
@@ -86,14 +88,14 @@ class Simulator:
                 self.circuit.ioList[gate.output] = int(not self.circuit.ioList[gate.inputs[0]])
 
             elif gate.gate_type == "BUF":
-                self.circuit.ioList[gate.output] = self.circuit.ioList[gate.inputs[0]]
+                self.circuit.ioList[gate.output] = int(self.circuit.ioList[gate.inputs[0]])
 
             elif gate.gate_type == "AND":
                 self.circuit.ioList[gate.output] = int(
                     self.circuit.ioList[gate.inputs[0]] & self.circuit.ioList[gate.inputs[1]])
 
             elif gate.gate_type == "NAND":
-                self.circuit.ioList[gate.output] = (
+                self.circuit.ioList[gate.output] = int(
                     not (self.circuit.ioList[gate.inputs[0]] and self.circuit.ioList[
                         gate.inputs[1]]))
             elif gate.gate_type == "NOR":
